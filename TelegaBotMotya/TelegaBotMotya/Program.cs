@@ -17,12 +17,11 @@ namespace TelegaBotMotya
 
 
 
-    class Program
+    public class Program
     {
 
         public static globals globals=new globals();
         public static List<user> users = new List<user>();
-        public static List<Client> clients = new List<Client>();
         public static List<ZakazOthet> zakazList = new List<ZakazOthet>();
         public static List<master> masters = new List<master>();
 
@@ -72,1139 +71,6 @@ namespace TelegaBotMotya
                 }      
             }
             await saveusers();
-        }
-
-        public static async Task acse1(Message message, int USER, int CHAT, ITelegramBotClient botClient)
-        {
-            switch (users[USER].ChatStep[CHAT])
-            {
-                case "0":
-                    {
-                        switch (message.Text)
-                        {
-
-                            case "Подсказка":
-                                {
-                                    
-
-
-                                    {
-
-
-                                        keybord(0, message, botClient, USER);
-
-
-                                    }
-                                    //await botClient.SendTextMessageAsync(message.Chat, );
-
-                                    return;
-
-                                }
-
-                            case "Все заказы":
-                                {
-                                    keybord(5, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "6";
-                                    
-                                    return;
-                                }
-                            case "Незаконченные":
-                                {
-                                    for (int i = 0; i < zakazList.Count; i++)
-                                    {
-
-                                        //zakazList[i].master = -1;
-                                        //Console.WriteLine(zakazList[i].MbTimeStart.DayOfYear + " " + DateTime.Now.DayOfYear);
-                                        //await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice);
-                                        //Console.WriteLine(DateTime.Now + " "+ zakazList[i].MbTimeStart.AddHours(3) + " " + zakazList[i].master +" "+ zakazList[i].otchet);
-                                        if (DateTime.Now>=zakazList[i].MbTimeStart.AddHours(3) & zakazList[i].master != -1 & zakazList[i].otchet == "")
-                                        {
-
-
-                                            InlineKeyboardMarkup keyboard = new(new[]
-                                                    {
-                                                new[]
-                                                    {
-                                                    InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+zakazList[i].id)
-                                                    },
-                                                });
-                                            await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya, replyMarkup: keyboard);
-
-                                        }
-                                        
-                                    }
-                                    keybord(0, message, botClient, USER);
-
-                                    return;
-                                }
-                            case "Законченные":
-                                {
-                                    for (int i = 0; i < zakazList.Count; i++)
-                                    {
-                                        //zakazList[i].otchet = "";
-                                        //zakazList[i].master = -1;
-                                        //Console.WriteLine(zakazList[i].MbTimeStart.DayOfYear + " " + DateTime.Now.DayOfYear);
-                                        //await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice);
-                                        //Console.WriteLine(zakazList[i].MbTimeStart  +" "+ zakazList[i].MbTimeStart.AddHours(3) + " " + zakazList[i].master +" "+ zakazList[i].otchet);
-                                        if (DateTime.Now >= zakazList[i].MbTimeStart.AddHours(3) & zakazList[i].master != -1 & zakazList[i].otchet != "")
-                                        {
-
-
-                                            InlineKeyboardMarkup keyboard = new(new[]
-                                                    {
-                                                new[]
-                                                    {
-                                                    InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+zakazList[i].id)
-                                                    },
-                                                });
-                                            await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya, replyMarkup: keyboard);
-
-                                        }
-
-                                    }
-                                    keybord(0, message, botClient, USER);
-                                    return;
-
-                                    return;
-                                }
-
-                            case "Все мастера":
-                                {
-                                    for (int i = 0; i < masters.Count; i++)
-                                    {
-
-                                        await botClient.SendTextMessageAsync(message.Chat, "Мастер № " + masters[i].id + "\n ФИО " + masters[i].fio + "\n рэйтинг " + masters[i].rayting + "\n профиль " + masters[i].profil);
-
-                                        //await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice);
-                                        //await botClient.SendTextMessageAsync(message.Chat, "Ваш заказ №" + i + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya);
-                                    }
-                                    return;
-                                }
-                            case "Выбрать заказ":
-                                {
-                                    if (zakazList.Count < 1)
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Заказы отсутствуют");
-                                    }
-                                    else
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Введите ID заказа");
-                                        users[USER].ChatStep[CHAT] = "1";
-                                    }
-
-                                    return;
-                                }
-                            case "Выбрать мастера":
-                                {
-                                    if (masters.Count < 1)
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Мастера отсутствуют");
-                                    }
-                                    else
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Введите ID мастера");
-                                        users[USER].ChatStep[CHAT] = "3";
-                                    }
-
-                                    return;
-                                }
-                            case "Удалить заказ":
-                                {
-                                    if (zakazList.Count < 1)
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Заказы отсутствуют");
-                                    }
-                                    else
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Для удаления введите  номер заказа до " + (zakazList.Count - 1) + "\n или -1 для выхода");
-                                        users[USER].ChatStep[CHAT] = "2";
-                                    }
-
-                                    return;
-                                }
-
-
-                            case "/kill":
-                                {
-                                    Environment.Exit(0);
-                                    return;
-                                }
-
-                            default:
-                                {
-                                    // if (message )
-                                    shablon(message,USER,CHAT,botClient);
-                                    break;
-
-                                }
-                        }
-                        return;
-                    }
-
-
-
-                case "1":
-                    {
-
-                        if (message.Text=="Назад")
-                        {
-                            users[USER].ChatStep[CHAT] = "0";
-                            keybord(0, message, botClient, USER);
-                            return;
-                        }    
-                        int numericValue;
-                        int i;
-                        if (int.TryParse(message.Text, out numericValue))
-                        {
-                            int zm= IDtoNUM_Z(numericValue);
-                            if (zm != -1)
-                            {
-
-
-                                //await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice);
-                                //await botClient.SendTextMessageAsync(message.Chat, "Ваш заказ №" + i + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya);
-
-                                
-
-                                //await botClient.SendTextMessageAsync(message.Chat, " Удалить заказ \n Поручить заказ \n Назад ");
-                                users[USER].lastMessage = zm.ToString();
-                                users[USER].ChatStep[CHAT] = "5";
-                                keybord(1, message, botClient, USER);
-                            }
-                            else
-                            {
-                                keybord(-1, message, botClient, USER);
-                                //await botClient.SendTextMessageAsync(message.Chat, "Вы ошиблись при вводе 1");
-                            }
-                        }
-                        else
-                        {
-                            keybord(-1, message, botClient, USER);
-                            //await botClient.SendTextMessageAsync(message.Chat, "Вы ошиблись при вводе 2     ");
-                            users[USER].ChatStep[CHAT] = "1";
-                        }
-
-                        {
-
-
-                           
-
-
-                        }
-
-                        return;
-
-                    }
-                case "5":
-                    {
-                        users[USER].ChatStep[CHAT] = message.Text;
-                       // users[USER].ChatStep[CHAT] = message.Text;
-                        switch (message.Text)
-                        {
-                            case "Поручить заказ":
-                                {
-                                    if (zakazList[Convert.ToInt32(users[USER].lastMessage)].master==-1)
-                                    await botClient.SendTextMessageAsync(message.Chat, "Введите № мастера");
-                                    else
-                                        await botClient.SendTextMessageAsync(message.Chat, "Введите № мастера если хотите заменить текущего");
-                                    return;
-
-                                }
-                            case "Удалить заказ":
-                                {
-                                    zakazList.RemoveAt(Convert.ToInt32(users[USER].lastMessage));
-                                    await savezakazlist();
-                                    await botClient.SendTextMessageAsync(message.Chat, "Заказ № " + Convert.ToInt32(users[USER].lastMessage) + " удалён");
-                                    
-                                    return;
-                                }
-                            case "Назад":
-                                {
-                                    keybord(0, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "0";
-
-
-                                    return;
-
-                                }
-                            case "Снять мастера":
-                                {
-                                    int i = Convert.ToInt32(users[USER].lastMessage);
-                                    Console.WriteLine("gfdshsdh "+i);
-                                    zakazList[i].master = -1;
-                                    int MASTER = -1;
-                                    for (int iJ = 0; iJ < masters.Count; iJ++)
-                                    {
-
-                                            for (int iJ1 = 0; iJ1 < masters[iJ].listZakaz.Count; iJ1++)
-                                            {
-                                                if (masters[iJ].listZakaz[iJ1] == zakazList[i].id)
-                                                {
-                                                    masters[iJ].listZakaz.RemoveAt(iJ1);
-                                                }
-                                            }
-                                        for (int iJ1 = 0; iJ1 < masters[iJ].mblistZakaz.Count; iJ1++)
-                                        {
-                                            if (masters[iJ].mblistZakaz[iJ1] == zakazList[i].id)
-                                            {
-                                                masters[iJ].mblistZakaz.RemoveAt(iJ1);
-                                            }
-                                        }
-
-                                    }
-                                    
-                                    keybord(1, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "5";
-                                    return;
-
-                                }
-                        }
-                        return;
-                    }
-                case "День":
-                    {
-                        users[USER].ChatStep[CHAT] = "6";return;
-                    }
-                case "6":
-                    {
-                        users[USER].ChatStep[CHAT] = message.Text;
-                        
-                        switch (message.Text)
-                        {
-                            case "День":
-                                {
-
-                                    for (int i = 0; i < zakazList.Count; i++)
-                                    {
-
-                                        await ZakazForDateBefore(i, 1, message, botClient);
-
-
-                                    }
-                                    users[USER].ChatStep[CHAT] = "6";
-                                    return;
-
-                                }
-                            case "Неделя":
-                                {     
-                                    for (int i = 0; i < zakazList.Count; i++)
-                                    {
-
-                                        await ZakazForDateBefore(i, 7, message, botClient);
-
-                                    }
-                                    users[USER].ChatStep[CHAT] = "6";
-                                    return;
-
-                                }
-                            case "Месяц":
-                                {
-
-                                    
-                                    for (int i = 0; i < zakazList.Count; i++)
-                                    {
-
-                                        await ZakazForDateBefore(i, 30, message, botClient);
-
-                                    }
-                                    users[USER].ChatStep[CHAT] = "6";
-                                    return;
-
-                                }
-                            case "3 Месяца":
-                                {
-
-                                    for (int i = 0; i < zakazList.Count; i++)
-                                    {
-
-                                        await ZakazForDateBefore(i, 90, message, botClient);
-
-                                    }
-                                    users[USER].ChatStep[CHAT] = "6";
-                                    return;
-
-                                }
-                            case "Пол года":
-                                {
-
-                                    for (int i = 0; i < zakazList.Count; i++)
-                                    {
-
-                                        await ZakazForDateBefore(i, 180, message, botClient);
-
-                                    }
-                                    users[USER].ChatStep[CHAT] = "6";
-                                    return;
-
-                                }
-                            case "Назад":
-                                {
-                                    keybord(0, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "0";
-
-
-                                    return;
-
-                                }
-                            
-                        }
-                        return;
-                    }
-                case "Поручить заказ":
-                    {
-                        int numericValue;
-                        //long i = -1;
-                        if (message.Text == "Назад")
-                        {
-                            users[USER].ChatStep[CHAT] = "5";
-                            keybord(0, message, botClient, USER);
-                            return;
-                        }
-                        int zm = -1;
-                        long i= Convert.ToInt64(message.Text); ;
-                        for (int j = 0; j < users.Count; j++)
-                        {
-                            if (users[j].Id == i)
-                            {
-                                zm = j;
-                            }
-                        }
-                        //zm;
-                        //if (int.TryParse(message.Text, out numericValue))
-                        {
-                            //long i = 
-                            //int zm = IDtoNUM_Z(i);
-                            Console.WriteLine(" " + zm+ " " + i);
-                            if (zm!=-1)
-                            {
-                                if (zakazList[Convert.ToInt32(users[USER].lastMessage)].master != -1)
-                                {
-                                    for (int i1 = 0; i1 < masters[IDtoNUM_M(zakazList[Convert.ToInt32(users[USER].lastMessage)].master)].listZakaz.Count; i1++)
-                                    {
-                                        if (masters[IDtoNUM_M(zakazList[Convert.ToInt32(users[USER].lastMessage)].master)].listZakaz[i1]== zakazList[Convert.ToInt32(users[USER].lastMessage)].id)
-                                        {
-                                            masters[IDtoNUM_M(zakazList[Convert.ToInt32(users[USER].lastMessage)].master)].listZakaz.RemoveAt(i1);
-                                        }
-                                    }
-                                    for (int i1 = 0; i1 < masters[IDtoNUM_M(zakazList[Convert.ToInt32(users[USER].lastMessage)].master)].mblistZakaz.Count; i1++)
-                                    {
-                                        if (masters[IDtoNUM_M(zakazList[Convert.ToInt32(users[USER].lastMessage)].master)].mblistZakaz[i1] == zakazList[Convert.ToInt32(users[USER].lastMessage)].id)
-                                        {
-                                            masters[IDtoNUM_M(zakazList[Convert.ToInt32(users[USER].lastMessage)].master)].mblistZakaz.RemoveAt(i1);
-                                        }
-                                    }
-                                }
-                                    masters[IDtoNUM_M(i)].mblistZakaz.Add(zakazList[Convert.ToInt32(users[USER].lastMessage)].id);
-                                zakazList[Convert.ToInt32(users[USER].lastMessage)].otpravitel = users[USER].Id;
-                                zakazList[Convert.ToInt32(users[USER].lastMessage)].master = i;
-
-                                await savemasters();
-
-                                await savezakazlist();
-
-                                
-                                //Console.WriteLine(users[masters[i].id].Id + " " + masters[i].id + " "+i);
-                                await botClient.SendTextMessageAsync(message.Chat, "Порученно мастеру № " + i);
-                                await botClient.SendTextMessageAsync(users[zm].chats[0], "Вам пришёл заказ");
-                                keybord(1, message, botClient, USER);
-
-                                users[USER].ChatStep[CHAT] = "5";
-                            }
-                            else
-                            {
-                                await botClient.SendTextMessageAsync(message.Chat, "Неверный номер мастера  " + (masters.Count - 1));
-                            }
-                        }
-
-                        return;
-                    }
-                
-
-
-
-
-                case "2":
-                    {
-                        int i = Convert.ToInt32(message.Text);
-                        if (i < zakazList.Count & i >= 0)
-                        {
-                            zakazList.RemoveAt(i);
-                            await savezakazlist();
-                            users[USER].ChatStep[CHAT] = "0";
-                            await botClient.SendTextMessageAsync(message.Chat, "Заказ удалён осталось " + (zakazList.Count - 1) + " заказов");
-                        }
-                        else
-                        {
-                            if (i == -1)
-                            {
-                                users[USER].ChatStep[CHAT] = "0";
-                                await botClient.SendTextMessageAsync(message.Chat, "Возврат к прошлому пункту меню");
-                            }
-                            else
-                                await botClient.SendTextMessageAsync(message.Chat, "Неверный номер заказа, максимальный номер заказа " + (zakazList.Count - 1));
-
-                        }
-
-                        return;
-
-                    }
-                case "3":
-                    {
-                        int numericValue;
-                        int i;
-                        if (message.Text == "Назад")
-                        {
-                            users[USER].ChatStep[CHAT] = "0";
-                            keybord(0, message, botClient, USER);
-                            return;
-                        }
-                        if (int.TryParse(message.Text, out numericValue))
-                        {
-                            i = Convert.ToInt32(message.Text);
-                            int zm = IDtoNUM_M(i);
-                            if (zm!=-1)
-                            {
-
-                            
-
-                                
-                                //await botClient.SendTextMessageAsync(message.Chat, "Мастер № " + i + "\n ФИО " + masters[i].fio + "\n рэйтинг " + masters[i].rayting + "\n профиль " + masters[i].profil);
-
-                                //await botClient.SendTextMessageAsync(message.Chat, " /delete \n Переименовать \n Изменить рейтинг \n Изменить профиль \n Назад ");
-                                users[USER].lastMessage = zm.ToString();
-                                users[USER].ChatStep[CHAT] = "4";
-                                keybord(2, message, botClient, USER);
-
-                            }
-                            else
-                            {
-                                keybord(-1, message, botClient, USER);
-                            }
-                        }
-                        else
-                        {
-                            keybord(-1, message, botClient, USER);
-                            users[USER].ChatStep[CHAT] = "3";
-                        }
-
-                        return;
-
-                    }
-                case "4":
-                    {
-                        users[USER].ChatStep[CHAT] = message.Text;
-                        switch (message.Text)
-                        {
-                            case "Переименовать":
-                                {
-                                    ReplyKeyboardMarkup keyboard = new(new[]
-                          {
-                                        new KeyboardButton[] {"Назад" }
-                                        })
-                                    {
-                                        ResizeKeyboard = true
-                                    };
-
-
-                                    await botClient.SendTextMessageAsync(message.Chat, "Введите ФИО мастера", replyMarkup: keyboard);
-                                    //await botClient.SendTextMessageAsync(message.Chat, "Введите ФИО мастера");
-
-                                    return;
-
-                                }
-                            case "Изменить рейтинг":
-                                {
-                                    ReplyKeyboardMarkup keyboard = new(new[]
-                          {
-                                        new KeyboardButton[] {"Назад" }
-                                        })
-                                    {
-                                        ResizeKeyboard = true
-                                    };
-
-
-                                    await botClient.SendTextMessageAsync(message.Chat, "Введите рэйтинг мастера", replyMarkup: keyboard);
-                                    //await botClient.SendTextMessageAsync(message.Chat, "Введите рэйтинг мастера");
-                                    return;
-
-                                }
-                            case "Изменить профиль":
-                                {
-                                    ReplyKeyboardMarkup keyboard = new(new[]
-                          {
-                                        new KeyboardButton[] {"Назад" }
-                                        })
-                                    {
-                                        ResizeKeyboard = true
-                                    };
-
-
-                                    await botClient.SendTextMessageAsync(message.Chat, "Введите профиль мастера", replyMarkup: keyboard);
-
-                                    //await botClient.SendTextMessageAsync(message.Chat, "Введите профиль мастера");
-                                    return;
-
-                                }
-                            case "Назад":
-                                {
-                                    keybord(0, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "0";
-
-
-                                    return;
-
-                                }
-                        }
-                        return;
-
-                    }
-                
-                
-                default:
-                    {
-                        keybord(0, message, botClient, USER);
-                        users[USER].ChatStep[CHAT] = "0";
-                        
-                        return;
-                    }
-
-
-
-            }
-        }
-        public static async Task acse2(Message message,int USER, int CHAT, ITelegramBotClient botClient)
-        {
-            Console.WriteLine(USER+" "+CHAT);
-            Console.WriteLine(users[USER].ChatStep[CHAT]);
-            //Console.WriteLine(message.Text);
-            //Console.WriteLine("AAA1");
-            //users[USER].ChatStep[CHAT] = "0";
-            //users[USER].ChatStep[CHAT] = "5";
-            int MASTER = -1;
-            for (int i = 0; i < masters.Count; i++)
-            {
-                if (masters[i].id == users[USER].Id)
-                {
-                    MASTER = i;
-                }
-            }
-            switch (users[USER].ChatStep[CHAT])
-            {
-                case "0":
-                    {
-                        
-                        switch (message.Text)
-                        {
-                            case "Подсказка":
-                                {
-                                    //await botClient.SendTextMessageAsync(message.Chat, "Добро пожаловать на борт, slaves! \n Список доступных комманд \n Подсказка \n /AllmyZakazs \n Все заказы \n /notends \n Выбрать заказ");
-                                    keybord(3, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "0";
-                                    return;
-
-                                }
-                            case "Назад":
-                                {
-                                    //await botClient.SendTextMessageAsync(message.Chat, "Добро пожаловать на борт, slaves! \n Список доступных комманд \n Подсказка \n /AllmyZakazs \n Все заказы \n /notends \n Выбрать заказ");
-                                    keybord(3, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "0";
-                                    return;
-
-                                }
-                            
-                            case "Все мои заказы":
-                                {
-                                    keybord(5, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "6";
-                                    
-
-
-                                    return;
-
-                                }
-                            case "Не завершённые":
-                                {
-                                    if (masters[MASTER].listZakaz.Count > 0)
-                                    {
-                                        for (int i = 0; i < masters[MASTER].listZakaz.Count; i++)
-                                        {
-                                            
-                                            int zm = IDtoNUM_Z(masters[MASTER].listZakaz[i]);
-                                            Console.WriteLine(i + " " + zm + " " + zakazList[zm].ended);
-                                            if (!zakazList[zm].ended)
-                                            {
-                                                InlineKeyboardMarkup keyboard = new(new[]
-                                                    {
-                                                new[]
-                                                    {
-                                                    InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+masters[MASTER].listZakaz[i])
-                                                    },
-                                                });
-                                                await botClient.SendAudioAsync(message.Chat, zakazList[zm].Zakaz.Voice, "Ваш заказ №" + zakazList[zm].id + "\n Время " + zakazList[zm].TimeStart + "\n Адресс " + zakazList[zm].Zakaz.adress + "\n телефон " + zakazList[zm].Zakaz.phone + "\n ФИО " + zakazList[zm].Zakaz.fio + "\n ТИП " + zakazList[zm].Zakaz.type + "\n Другое " + zakazList[zm].Zakaz.hyinya+" \n ended" +zakazList[zm].ended, replyMarkup: keyboard);
-                                            }
-                                            else
-                                            {
-                                                await botClient.SendTextMessageAsync(message.Chat, "У вас нет незавершённых заказов");
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "У вас нет заказов");
-                                    }
-
-
-                                    return;
-
-                                }
-                            case "Входящие":
-                                {
-                                    //Console.WriteLine(masters[MASTER].id+" "+ masters[MASTER].mblistZakaz.Count);
-                                    if (masters[MASTER].mblistZakaz.Count > 0)
-                                    {
-                                        for (int i = 0; i < masters[MASTER].mblistZakaz.Count; i++)
-                                        {
-                                            int zm = IDtoNUM_Z(masters[MASTER].mblistZakaz[i]);
-                                            InlineKeyboardMarkup keyboard = new(new[]
-                                                {
-                                                new[]
-                                                    {
-                                                    InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+masters[MASTER].mblistZakaz[i])
-                                                    },
-                                                });
-                                            await botClient.SendAudioAsync(message.Chat, zakazList[zm].Zakaz.Voice, "Ваш заказ №" + zakazList[zm].id + "\n Время " + zakazList[zm].TimeStart + "\n Адресс " + zakazList[zm].Zakaz.adress + "\n телефон " + zakazList[zm].Zakaz.phone + "\n ФИО " + zakazList[zm].Zakaz.fio + "\n ТИП " + zakazList[zm].Zakaz.type + "\n Другое " + zakazList[zm].Zakaz.hyinya, replyMarkup: keyboard);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "У вас нет заказов");
-                                    }
-
-
-                                    return;
-
-                                }
-                            case "/notends":
-                                {
-                                    users[USER].access = 1;
-
-                                    await botClient.SendTextMessageAsync(message.Chat, "Вы мотя");
-                                    return;
-
-                                }
-                            case "Выбрать заказ":
-                                {
-                                    if (masters[MASTER].listZakaz.Count < 1)
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Заказы отсутствуют");
-                                    }
-                                    else
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Введите номер заказа до " + (masters[MASTER].listZakaz.Count - 1));
-                                        users[USER].ChatStep[CHAT] = "1";
-                                    }
-                                    return;
-                                }
-                        }
-                        return;
-                    }
-                case "5":
-                    {
-                        //Console.WriteLine("AAA2");
-                        //new KeyboardButton[] { "Принять заказ", "Отказаться от заказа", "Назад" },
-                        //    new KeyboardButton[] { "ДР", "Перенос даты ремонта", "Отчёт" }
-                        
-                            // users[USER].ChatStep[CHAT] = message.Text;
-                            //Console.WriteLine(message.Text);
-                            switch (message.Text)
-                        {
-                            case "Принять заказ":
-                                {
-                                    //Console.WriteLine(zakazList[Convert.ToInt32(users[USER].lastMessage)].master+ " "+ message.From.Id);
-                                    int zzz = 0;
-                                    users[USER].ChatStep[CHAT] = message.Text;
-                                    Console.WriteLine(masters[MASTER].mblistZakaz.Count + "  "+ masters[MASTER].listZakaz.Count);
-                                    for (int i = 0; i < masters[MASTER].listZakaz.Count; i++)
-                                    {
-
-                                                //Console.WriteLine(zakazList[Convert.ToInt32(users[USER].lastMessage)].id + "   "+ masters[MASTER].listZakaz[i1]);
-                                                if (zakazList[Convert.ToInt32(users[USER].lastMessage)].id == masters[MASTER].listZakaz[i])
-                                                {
-                                                    //Console.WriteLine("FFFFFFFFFFF");
-                                                    zzz = 1;
-                                                }
-                                            
-                                        
-                                    }
-                                    Console.WriteLine(zzz + " KKKKK");
-                                    if (zzz!=1)
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Заказ принят");
-
-                                        int xxx = 0;
-                                        for (int i = 0; i < users.Count; i++)
-                                        {
-                                            if (users[i].Id == zakazList[Convert.ToInt32(users[USER].lastMessage)].otpravitel)
-                                            {
-                                               xxx = i;
-                                            }
-                                        }
-
-                                        await botClient.SendTextMessageAsync(users[xxx].chats[0], "От мастера " + masters[MASTER].fio + "\nЗаказа № " + zakazList[Convert.ToInt32(users[USER].lastMessage)].id+" принят");
-
-                                            for (int i = 0; i < masters[MASTER].mblistZakaz.Count; i++)
-                                    {
-                                        //Console.WriteLine(IDtoNUM_Z(masters[MASTER].mblistZakaz[i]) + " " + Convert.ToInt32(users[USER].lastMessage));
-                                        if (masters[MASTER].mblistZakaz[i] == zakazList[Convert.ToInt32(users[USER].lastMessage)].id)
-                                        {
-                                            masters[MASTER].listZakaz.Add(masters[MASTER].mblistZakaz[i]);
-                                            masters[MASTER].mblistZakaz.RemoveAt(i);
-                                        }
-                                    }
-                                    }
-                                    else
-                                    {
-                                        await botClient.SendTextMessageAsync(message.Chat, "Заказ уже принят");
-                                    }
-                                    users[USER].ChatStep[CHAT] = "5";
-
-                                    await savemasters();
-                                    await savezakazlist();
-                                    return;
-
-                                }
-                            case "Отказаться от заказа":
-                                {
-                                    //zakazList.RemoveAt(Convert.ToInt32(users[USER].lastMessage));
-                                    users[USER].ChatStep[CHAT] = "Причина отказа";
-                                    ReplyKeyboardMarkup keyboard = new(new[]
-                          {
-                                        new KeyboardButton[] {"Назад" }
-                                        })
-                                    {
-                                        ResizeKeyboard = true
-                                    };
-
-
-                                    await botClient.SendTextMessageAsync(message.Chat, "Заказу № " + zakazList[Convert.ToInt32(users[USER].lastMessage)].id + " отказан. \nОпишите причину", replyMarkup: keyboard);
-
-                                    await savemasters();
-                                    await savezakazlist();
-
-                                    return;
-                                }
-                            case "Назад":
-                                {
-                                    //Console.WriteLine("AAA3");
-                                    keybord(3, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "0";
-                                    //Console.WriteLine("aaaaaaaaaaaa");
-
-                                    return;
-
-                                }
-                            case "ДР":
-                                {
-                                    int i = Convert.ToInt32(users[USER].lastMessage);
-                                    await botClient.SendTextMessageAsync(message.Chat, "Отмеченно ка ДР");
-                                    //zakazList[i].master = -1;
-
-                                    zakazList[Convert.ToInt32(users[USER].lastMessage)].DR = true;
-                                    keybord(4, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "5";
-
-                                    await savemasters();
-                                    await savezakazlist();
-                                    return;
-
-                                }
-                            case "Перенос даты ремонта":
-                                {
-                                    await botClient.SendTextMessageAsync(message.Chat, "Введите двае даты в формате день месяц год пример:\n20 02 2020 14 50 - 21 02 2020 16 20");
-                                    users[USER].ChatStep[CHAT] = "Перенос даты ремонта";
-
-                                    await savemasters();
-                                    await savezakazlist();
-                                    return;
-
-                                }
-                            case "Отчёт":
-                                {
-                                    await botClient.SendTextMessageAsync(message.Chat, "Опишите заказ в отчёте");
-                                    users[USER].ChatStep[CHAT] = "Отчёт";
-
-                                    await savemasters();
-                                    await savezakazlist();
-                                    return;
-
-                                }
-                            default:
-                                {
-                                    await botClient.SendTextMessageAsync(message.Chat, "ошибка");
-                                    users[USER].ChatStep[CHAT] = "5";
-                                    
-                                    return;
-                                }
-                        }
-                        return;
-                    }
-
-                case "6":
-                    {
-                        if(message.Text== "Назад")
-                    {
-                        keybord(3, message, botClient, USER);
-                        users[USER].ChatStep[CHAT] = "0";
-
-
-                        return;
-
-                    }
-                    if (masters[MASTER].listZakaz.Count > 0)
-                        {
-                            
-                        
-                        //users[USER].ChatStep[CHAT] = message.Text;
-
-                        // users[USER].ChatStep[CHAT] = message.Text;
-                        switch (message.Text)
-                        {
-                            case "День":
-                                {
-
-                                       
-                                        for (int zm = 0; zm < masters[MASTER].listZakaz.Count; zm++)
-                                        {
-                                            int i = IDtoNUM_Z(masters[MASTER].listZakaz[zm]);
-                                            await ZakazForDateBefore(i, 1, message, botClient);
-                                        }
-                                        users[USER].ChatStep[CHAT] = "6";
-                                        return;
-
-                                }
-                            case "Неделя":
-                                    {
-
-                                       
-                                        for (int zm = 0; zm < masters[MASTER].listZakaz.Count; zm++)
-                                        {
-                                            int i = IDtoNUM_Z(masters[MASTER].listZakaz[zm]);
-                                            await ZakazForDateBefore(i, 7, message, botClient);
-                                        }
-                                        users[USER].ChatStep[CHAT] = "6";
-                                        return;
-
-                                    }
-                                case "Месяц":
-                                    {
-
-                                        
-                                        for (int zm = 0; zm < masters[MASTER].listZakaz.Count; zm++)
-                                        {
-                                            int i = IDtoNUM_Z(masters[MASTER].listZakaz[zm]);                                           
-                                            await ZakazForDateBefore(i, 30, message, botClient);
-                                        }
-                                        users[USER].ChatStep[CHAT] = "6";
-                                        return;
-
-                                    }
-                                case "3 Месяца":
-                                    {
-
-                                       
-                                        for (int zm = 0; zm < masters[MASTER].listZakaz.Count; zm++)
-                                        {
-                                            int i = IDtoNUM_Z(masters[MASTER].listZakaz[zm]);                                         
-                                            await ZakazForDateBefore(i, 90, message, botClient);
-                                        }
-                                        users[USER].ChatStep[CHAT] = "6";
-                                        return;
-
-                                    }
-                                case "Пол года":
-                                    {
-
-
-                                        for (int zm = 0; zm < masters[MASTER].listZakaz.Count; zm++)
-                                        {
-                                            int i = IDtoNUM_Z(masters[MASTER].listZakaz[zm]);
-                                            await ZakazForDateBefore(i, 180, message, botClient);
-                                        }
-                                        users[USER].ChatStep[CHAT] = "6";
-                                        return;
-
-                                    }
-                                case "Назад":
-                                {
-                                    keybord(3, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "0";
-
-
-                                    return;
-
-                                }
-                                    
-                            }
-                        }
-                        else
-                        {
-                            await botClient.SendTextMessageAsync(message.Chat, "У вас нет заказов");
-                        }
-                        return;
-                        
-                    }
-                case "Причина отказа":
-                    {
-                        if (message.Text=="Назад")
-                        {
-                            users[USER].ChatStep[CHAT] = "5";
-                            keybord(4, message, botClient, USER);
-                            return;
-                        }    
-                        for(int ji=0;ji<users.Count;ji++)
-                        {
-                            if (users[ji].Id == zakazList[Convert.ToInt32(users[USER].lastMessage)].otpravitel)
-                            {
-                                await botClient.SendTextMessageAsync(users[ji].chats[0],"От мастера "+masters[MASTER].fio +"\nОтказ от заказа № "+ zakazList[Convert.ToInt32(users[USER].lastMessage)].id+" комментарий:\n"+  message.Text);
-                                //await botClient.SendTextMessageAsync(message.Chat, "Заказ принят");
-                                for (int i = 0; i < masters[MASTER].mblistZakaz.Count; i++)
-                                {
-                                    //Console.WriteLine(masters[MASTER].mblistZakaz[i].id + " " + Convert.ToInt32(users[USER].lastMessage));
-                                    if (masters[MASTER].mblistZakaz[i] == zakazList[Convert.ToInt32(users[USER].lastMessage)].id)
-                                    {
-                                        //masters[MASTER].listZakaz.Add(masters[MASTER].mblistZakaz[i]);
-                                        masters[MASTER].mblistZakaz.RemoveAt(i);
-                                    }
-                                }
-                                for (int i = 0; i < masters[MASTER].listZakaz.Count; i++)
-                                {
-                                    //Console.WriteLine(masters[MASTER].listZakaz[i].id + " " + Convert.ToInt32(users[USER].lastMessage));
-                                    if (masters[MASTER].listZakaz[i] == zakazList[Convert.ToInt32(users[USER].lastMessage)].id)
-                                    {
-                                        //masters[MASTER].listZakaz.Add(masters[MASTER].mblistZakaz[i]);
-                                        masters[MASTER].listZakaz.RemoveAt(i);
-                                    }
-                                }
-                                users[USER].ChatStep[CHAT] = "0";
-                                return;
-
-                            }
-                        }
-                        return;
-                    }
-                case "Отчёт":
-                    {
-                        if (message.Text == "Назад")
-                        {
-                            users[USER].ChatStep[CHAT] = "0";
-                            return;
-                        }
-                        else
-                        {
-                            string[] subs = (message.Text.ToString()).Split(' ');
-                            string str = "";
-                            for (int jj = 0; jj < subs.Length; jj++)
-                            {
-                                if (subs[jj] == "Чистыми" | subs[jj] == "чистыми" | subs[jj] == "\nЧистыми" | subs[jj] == "\nчистыми")
-                                {
-                                    for (int jjj = jj+1; jjj < subs.Length; jjj++)
-                                    {
-                                        int numericValue;
-                                        if (int.TryParse(subs[jjj], out numericValue))
-                                        {
-                                            str = str + subs[jjj];
-                                        }
-                                    }
-                                }
-                            }
-                            if (str != "")
-                            {
-                                for (int ji = 0; ji < users.Count; ji++)
-                                {
-                                    if (users[ji].Id == zakazList[Convert.ToInt32(users[USER].lastMessage)].otpravitel)
-                                    {
-
-                                        await botClient.SendTextMessageAsync(users[ji].chats[0], "От мастера " + masters[MASTER].fio + "\nОтчёт по заказу № " + zakazList[Convert.ToInt32(users[USER].lastMessage)].id + " комментарий:\n" + message.Text);
-                                        int zm = -1;
-
-
-                                        //masters[IDtoNUM_M(zakazList[Convert.ToInt32(users[USER].lastMessage)].master)].listZakaz[zm].ended = true;
-                                        zakazList[Convert.ToInt32(users[USER].lastMessage)].ended = true;
-                                        zakazList[Convert.ToInt32(users[USER].lastMessage)].otchet = message.Text;
-                                        zakazList[Convert.ToInt32(users[USER].lastMessage)].sum= Convert.ToInt32(str);
-                                        //await botClient.SendTextMessageAsync(message.Chat, "Заказ принят");
-
-                                        //for (int i = 0; i < masters[MASTER].listZakaz.Count; i++)
-                                        //{
-                                        //    //Console.WriteLine(masters[MASTER].listZakaz[i].id + " " + Convert.ToInt32(users[USER].lastMessage));
-                                        //    if (masters[MASTER].listZakaz[i].id == zakazList[Convert.ToInt32(users[USER].lastMessage)].id)
-                                        //    {
-                                        //        //masters[MASTER].listZakaz.Add(masters[MASTER].mblistZakaz[i]);
-                                        //        //masters[MASTER].listZakaz.RemoveAt(i);
-                                        //    }
-                                        //}
-                                        users[USER].ChatStep[CHAT] = "0";
-                                        return;
-
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                await botClient.SendTextMessageAsync(message.Chat, "В отчёте не найденно слово \"чистыми\" \nВведите заново");
-                                users[USER].ChatStep[CHAT] = "Отчёт";
-                            }
-                        }
-                        return;
-                    }
-                case "Перенос даты ремонта":
-                    {
-                        if (message.Text == "Назад")
-                        {
-                            users[USER].ChatStep[CHAT] = "0";
-                            return;
-                        }
-                        string[] subs = (message.Text.ToString()).Split(' ');
-                        if (subs.Length!=10)
-                        {
-
-                            {
-                                await botClient.SendTextMessageAsync(message.Chat, "ошибка при вводе");
-                                keybord(4, message, botClient, USER);
-                                users[USER].ChatStep[CHAT] = "5";
-                                return;
-                            }
-                        }
-                        for (int i = 0; i < subs.Length; i++)
-                        {
-                            //Console.WriteLine(subs[i]);
-                            if (subs[i] != "-")
-                            {
-                                int numericValue;
-                                if (int.TryParse(subs[i], out numericValue))
-                                {
-
-                                }
-                                else
-                                {
-                                    await botClient.SendTextMessageAsync(message.Chat, "ошибка при вводе");
-                                    keybord(4, message, botClient, USER);
-                                    users[USER].ChatStep[CHAT] = "5";
-                                    return;
-                                }
-                            }
-                        }
-                        int zg = Convert.ToInt32(subs[1]);
-                        DateTime date1 = new DateTime(Convert.ToInt32(subs[2]), Convert.ToInt32(subs[1]), Convert.ToInt32(subs[0]), Convert.ToInt32(subs[3]), Convert.ToInt32(subs[4]), 0);
-                        zakazList[Convert.ToInt32(users[USER].lastMessage)].TimeStart = date1;
-                        DateTime date2 = new DateTime(Convert.ToInt32(subs[8]), Convert.ToInt32(subs[7]), Convert.ToInt32(subs[6]), Convert.ToInt32(subs[9]), Convert.ToInt32(subs[10]), 0);
-                        zakazList[Convert.ToInt32(users[USER].lastMessage)].TimeStart = date2;
-                        keybord(4, message, botClient, USER);
-                        users[USER].ChatStep[CHAT] = "5";
-                        await botClient.SendTextMessageAsync(message.Chat, "Даты ремонта перенесены");
-                        return;
-                    }
-            }
         }
         public static async Task acse_1(Message message, int USER, int CHAT, ITelegramBotClient botClient)
         {
@@ -1324,7 +190,7 @@ namespace TelegaBotMotya
                                                     InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+masters[MASTER].listZakaz[i])
                                                     },
                                                 });
-                                                await botClient.SendAudioAsync(message.Chat, zakazList[zm].Zakaz.Voice, "Ваш заказ №" + zakazList[zm].id + "\n Время " + zakazList[zm].TimeStart + "\n Адресс " + zakazList[zm].Zakaz.adress + "\n телефон " + zakazList[zm].Zakaz.phone + "\n ФИО " + zakazList[zm].Zakaz.fio + "\n ТИП " + zakazList[zm].Zakaz.type + "\n Другое " + zakazList[zm].Zakaz.hyinya + " \n ended" + zakazList[zm].ended, replyMarkup: keyboard);
+                                                await botClient.SendAudioAsync(message.Chat, zakazList[zm].Zakaz.Voice, "Ваш заказ №" + zakazList[zm].id + "\n Время " + zakazList[zm].TimeStart + "\n Адресс " + zakazList[zm].Zakaz.adress + "\n телефон " + zakazList[zm].Zakaz.phone + "\n ФИО " + zakazList[zm].Zakaz.fio + "\n ТИП " + zakazList[zm].Zakaz.type + "\n Другое " + zakazList[zm].Zakaz.unknown + " \n ended" + zakazList[zm].ended, replyMarkup: keyboard);
                                             }
                                             else
                                             {
@@ -1356,7 +222,7 @@ namespace TelegaBotMotya
                                                     InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+masters[MASTER].mblistZakaz[i])
                                                     },
                                                 });
-                                            await botClient.SendAudioAsync(message.Chat, zakazList[zm].Zakaz.Voice, "Ваш заказ №" + zakazList[zm].id + "\n Время " + zakazList[zm].TimeStart + "\n Адресс " + zakazList[zm].Zakaz.adress + "\n телефон " + zakazList[zm].Zakaz.phone + "\n ФИО " + zakazList[zm].Zakaz.fio + "\n ТИП " + zakazList[zm].Zakaz.type + "\n Другое " + zakazList[zm].Zakaz.hyinya, replyMarkup: keyboard);
+                                            await botClient.SendAudioAsync(message.Chat, zakazList[zm].Zakaz.Voice, "Ваш заказ №" + zakazList[zm].id + "\n Время " + zakazList[zm].TimeStart + "\n Адресс " + zakazList[zm].Zakaz.adress + "\n телефон " + zakazList[zm].Zakaz.phone + "\n ФИО " + zakazList[zm].Zakaz.fio + "\n ТИП " + zakazList[zm].Zakaz.type + "\n Другое " + zakazList[zm].Zakaz.unknown, replyMarkup: keyboard);
                                         }
                                     }
                                     else
@@ -1849,7 +715,7 @@ namespace TelegaBotMotya
                                                     InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+zakazList[i].id)
                                                     },
                                                 });
-                                            await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya, replyMarkup: keyboard);
+                                            await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.unknown, replyMarkup: keyboard);
 
                                         }
 
@@ -1878,7 +744,7 @@ namespace TelegaBotMotya
                                                     InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+zakazList[i].id)
                                                     },
                                                 });
-                                            await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya, replyMarkup: keyboard);
+                                            await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.unknown, replyMarkup: keyboard);
 
                                         }
 
@@ -1902,12 +768,12 @@ namespace TelegaBotMotya
                                                     },
                                                 });
                                         await botClient.SendTextMessageAsync(message.Chat, "Мастер № " + masters[i].id + "\n ФИО " + masters[i].fio + "\n рэйтинг " + masters[i].rayting + "\n профиль " + masters[i].profil, replyMarkup: keyboard);
-                                        //await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya, replyMarkup: keyboard);
+                                        //await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.unknown, replyMarkup: keyboard);
 
 
 
                                         //await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice);
-                                        //await botClient.SendTextMessageAsync(message.Chat, "Ваш заказ №" + i + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya);
+                                        //await botClient.SendTextMessageAsync(message.Chat, "Ваш заказ №" + i + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.unknown);
                                     }
                                     users[USER].menu.Clear();
                                     users[USER].menu.Add(7);
@@ -2372,28 +1238,28 @@ namespace TelegaBotMotya
 
         public static async Task savemasters()
         {
-            string fileName1 = @"C:\Users\10PC\Desktop\TelegaBot\dateSaves\masters.txt";
+            string fileName1 = @"dateSaves\masters.txt";
             using FileStream createStream1 = System.IO.File.Create(fileName1);
             await JsonSerializer.SerializeAsync(createStream1, masters);
             await createStream1.DisposeAsync();
         }
         public static async Task saveusers()
         {
-            string fileName1 = @"C:\Users\10PC\Desktop\TelegaBot\dateSaves\users.txt";
+            string fileName1 = @"dateSaves\users.txt";
             using FileStream createStream1 = System.IO.File.Create(fileName1);
             await JsonSerializer.SerializeAsync(createStream1, users);
             await createStream1.DisposeAsync();
         }
         public static async Task savezakazlist()
         {
-            string fileName = @"C:\Users\10PC\Desktop\TelegaBot\dateSaves\zakazList.txt";
+            string fileName = @"dateSaves\zakazList.txt";
             using FileStream createStream = System.IO.File.Create(fileName);
             await JsonSerializer.SerializeAsync(createStream, zakazList);
             await createStream.DisposeAsync();
         }
         public static async Task saveglobals()
         {
-            string fileName = @"C:\Users\10PC\Desktop\TelegaBot\dateSaves\globals.txt";
+            string fileName = @"dateSaves\globals.txt";
             using FileStream createStream = System.IO.File.Create(fileName);
             await JsonSerializer.SerializeAsync(createStream, globals);
             await createStream.DisposeAsync();
@@ -2547,7 +1413,7 @@ namespace TelegaBotMotya
                             {
                                 if (subs[i] != " ")
                                 {
-                                    z.hyinya = subs[i];
+                                    z.unknown = subs[i];
                                     zz++;
                                     continue;
                                 }
@@ -2557,7 +1423,7 @@ namespace TelegaBotMotya
                     zo.id = globals.IdZakazSchet;
                     globals.IdZakazSchet++;
                     saveglobals();
-                    if (z.phone != "" & z.adress != "" & z.fio != "" & z.type != "" & z.hyinya != "")
+                    if (z.phone != "" & z.adress != "" & z.fio != "" & z.type != "" & z.unknown != "")
                     {
                         zakazList.Add(zo);
 
@@ -2571,7 +1437,7 @@ namespace TelegaBotMotya
                             if (users[USER].ChatsAccess[i] == 1)
                             {
                                 await botClient.SendAudioAsync(users[USER].chats[i], zakazList[i].Zakaz.Voice);
-                                await botClient.SendTextMessageAsync(users[USER].chats[i], "Ваш заказ №" + i + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya);
+                                await botClient.SendTextMessageAsync(users[USER].chats[i], "Ваш заказ №" + i + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.unknown);
                             }
                         }
                     }
@@ -2591,7 +1457,7 @@ namespace TelegaBotMotya
                                                     InlineKeyboardButton.WithCallbackData("Перейти на заказ № "+zakazList[i].id)
                                                     },
                                                 });
-                await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya, replyMarkup: keyboard);
+                await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.unknown, replyMarkup: keyboard);
             }
             return;
         }
@@ -2639,7 +1505,7 @@ namespace TelegaBotMotya
                             master = masters[MASTER].fio;
                         }
                         //Console.WriteLine(master);
-                        await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya + "\n Мастер "+master, replyMarkup: keyboard);
+                        await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.unknown + "\n Мастер "+master, replyMarkup: keyboard);
 
                         return;
                     }
@@ -2681,7 +1547,7 @@ namespace TelegaBotMotya
                         {
                             ResizeKeyboard = true
                         };
-                        await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.hyinya + "\n Мастер ууу"   + "\n отчёт " +zakazList[i].ended+"\n"+ zakazList[i].TimeStart+" "+ zakazList[i].TimeEnd, replyMarkup: keyboard);
+                        await botClient.SendAudioAsync(message.Chat, zakazList[i].Zakaz.Voice, "Ваш заказ №" + zakazList[i].id + "\n Время " + zakazList[i].TimeStart + "\n Адресс " + zakazList[i].Zakaz.adress + "\n телефон " + zakazList[i].Zakaz.phone + "\n ФИО " + zakazList[i].Zakaz.fio + "\n ТИП " + zakazList[i].Zakaz.type + "\n Другое " + zakazList[i].Zakaz.unknown + "\n Мастер ууу"   + "\n отчёт " +zakazList[i].ended+"\n"+ zakazList[i].TimeStart+" "+ zakazList[i].TimeEnd, replyMarkup: keyboard);
 
                         return;
                     }
@@ -2816,7 +1682,7 @@ namespace TelegaBotMotya
                 //Console.WriteLine(USER + " " + CHAT);t
                 //Console.WriteLine(USER + " " + subs[4]+" "+zm);
                 //if (zm!=-1)
-                //await botClient.SendTextMessageAsync(message.Chat, "Ваш заказ №" + zakazList[ij].id + "\n Время " + zakazList[ij].TimeStart + "\n Адресс " + zakazList[ij].Zakaz.adress + "\n телефон " + zakazList[ij].Zakaz.phone + "\n ФИО " + zakazList[ij].Zakaz.fio + "\n ТИП " + zakazList[ij].Zakaz.type + "\n Другое " + zakazList[ij].Zakaz.hyinya + "\n Мастер ");
+                //await botClient.SendTextMessageAsync(message.Chat, "Ваш заказ №" + zakazList[ij].id + "\n Время " + zakazList[ij].TimeStart + "\n Адресс " + zakazList[ij].Zakaz.adress + "\n телефон " + zakazList[ij].Zakaz.phone + "\n ФИО " + zakazList[ij].Zakaz.fio + "\n ТИП " + zakazList[ij].Zakaz.type + "\n Другое " + zakazList[ij].Zakaz.unknown + "\n Мастер ");
                 switch (users[USER].access)
                 {
                     case 1:
@@ -2862,7 +1728,7 @@ namespace TelegaBotMotya
                 //Console.WriteLine(USER + " " + CHAT);t
                 //Console.WriteLine(USER + " " + subs[4]+" "+zm);
                 //if (zm!=-1)
-                //await botClient.SendTextMessageAsync(message.Chat, "Ваш заказ №" + zakazList[ij].id + "\n Время " + zakazList[ij].TimeStart + "\n Адресс " + zakazList[ij].Zakaz.adress + "\n телефон " + zakazList[ij].Zakaz.phone + "\n ФИО " + zakazList[ij].Zakaz.fio + "\n ТИП " + zakazList[ij].Zakaz.type + "\n Другое " + zakazList[ij].Zakaz.hyinya + "\n Мастер ");
+                //await botClient.SendTextMessageAsync(message.Chat, "Ваш заказ №" + zakazList[ij].id + "\n Время " + zakazList[ij].TimeStart + "\n Адресс " + zakazList[ij].Zakaz.adress + "\n телефон " + zakazList[ij].Zakaz.phone + "\n ФИО " + zakazList[ij].Zakaz.fio + "\n ТИП " + zakazList[ij].Zakaz.type + "\n Другое " + zakazList[ij].Zakaz.unknown + "\n Мастер ");
                 switch (users[USER].access)
                 {
                     case 1:
@@ -2898,18 +1764,42 @@ namespace TelegaBotMotya
         {
 
                 Console.WriteLine("Запущен бот " + bot.GetMeAsync().Result.FirstName);
-            string fileName = @"C:\Users\10PC\Desktop\TelegaBot\dateSaves\zakazList.txt";
-            string jsonString = System.IO.File.ReadAllText(fileName);
-            zakazList = JsonSerializer.Deserialize<List<ZakazOthet>>(jsonString)!;
+            string fileName = @"dateSaves\zakazList.txt";
+            if (System.IO.File.Exists(fileName))
+            {
+                string jsonString = System.IO.File.ReadAllText(fileName);
+                zakazList = JsonSerializer.Deserialize<List<ZakazOthet>>(jsonString)!;
+            }
+            else
+            {
+                System.IO.Directory.CreateDirectory(@"dateSaves");
 
-            string fileName1 = @"C:\Users\10PC\Desktop\TelegaBot\dateSaves\users.txt";
-            string jsonString1 = System.IO.File.ReadAllText(fileName1);
-            users = JsonSerializer.Deserialize<List<user>>(jsonString1)!;
+            }
+            string fileName1 = @"dateSaves\users.txt";
+            if (System.IO.File.Exists(fileName1))
+            {
+                string jsonString1 = System.IO.File.ReadAllText(fileName1);
+                users = JsonSerializer.Deserialize<List<user>>(jsonString1)!;
+            }
+            string fileName2 = @"dateSaves\masters.txt";
+            if (System.IO.File.Exists(fileName2))
+            {
+                string jsonString2 = System.IO.File.ReadAllText(fileName2);
+                masters = JsonSerializer.Deserialize<List<master>>(jsonString2)!;
+            }
+            string fileName3 = @"dateSaves\globals.txt";
+            if (System.IO.File.Exists(fileName3))
+            {
+                string jsonString3 = System.IO.File.ReadAllText(fileName3);
+                globals = JsonSerializer.Deserialize<globals>(jsonString3)!;
+            }
 
-            string fileName2 = @"C:\Users\10PC\Desktop\TelegaBot\dateSaves\masters.txt";
-            string jsonString2 = System.IO.File.ReadAllText(fileName2);
-            masters = JsonSerializer.Deserialize<List<master>>(jsonString2)!;
-            
+
+
+
+
+
+
             //string fileName3 = @"C:\Users\10PC\Desktop\TelegaBot\dateSaves\masters.txt";
             //string jsonString3 = System.IO.File.ReadAllText(fileName3);
             //globals = JsonSerializer.Deserialize<globals>(jsonString3)!;

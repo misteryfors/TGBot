@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TelegaBotMotya
 {
-    internal class globals
+    public class globals
     {
         public int IdZakazSchet { get; set; } = 0;
         public int IdMasterSchet { get; set; } = 0;

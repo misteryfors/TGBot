@@ -9,7 +9,7 @@ using Telegram.Bot.Types;
 
 namespace TelegaBotMotya
 {
-    internal class user
+    public class user
     {
         public long Id { get; set; }
 

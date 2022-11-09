@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TelegaBotMotya
 {
-    internal class master
+    public class master
     {
         public long id { get; set; }
         public string fio { get; set; }

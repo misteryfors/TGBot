@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TelegaBotMotya
 {
-    internal class ZakazOthet
+    public class ZakazOthet
     {
         public int id { get; set; }
         public Zakaz Zakaz {get; set; }

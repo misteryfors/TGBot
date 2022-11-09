@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegaBotMotya", "TelegaBotMotya\TelegaBotMotya.csproj", "{5791C889-2528-4C74-99ED-FF976916CD0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TelegaBotMotya", "TelegaBotMotya\TelegaBotMotya.csproj", "{5791C889-2528-4C74-99ED-FF976916CD0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "TestProject1\TestProject1.csproj", "{CC1C4404-06FD-4472-B90C-E86474CC8213}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5791C889-2528-4C74-99ED-FF976916CD0B} = {5791C889-2528-4C74-99ED-FF976916CD0B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{5791C889-2528-4C74-99ED-FF976916CD0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5791C889-2528-4C74-99ED-FF976916CD0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5791C889-2528-4C74-99ED-FF976916CD0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC1C4404-06FD-4472-B90C-E86474CC8213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC1C4404-06FD-4472-B90C-E86474CC8213}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC1C4404-06FD-4472-B90C-E86474CC8213}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC1C4404-06FD-4472-B90C-E86474CC8213}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
