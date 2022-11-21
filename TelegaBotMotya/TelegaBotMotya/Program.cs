@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -19,13 +19,14 @@ namespace TelegaBotMotya
 
     public class Program
     {
-
+        //глобальные переменные сохраняемые в файлы
         public static globals globals=new globals();
         public static List<user> users = new List<user>();
         public static List<ZakazOthet> zakazList = new List<ZakazOthet>();
         public static List<master> masters = new List<master>();
 
         static ITelegramBotClient bot = new TelegramBotClient("5793343259:AAHn_52qS37gw79qOcUGfqJP2n-Oe9kn8QA");
+        //функция первичного отлова запросов для определения их уровня доступа и текущего пункта меню
         public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == UpdateType.CallbackQuery)
@@ -72,6 +73,7 @@ namespace TelegaBotMotya
             }
             await saveusers();
         }
+        //функция содержащая меню ветвления для незарегистрированного пользователя
         public static async Task acse_1(Message message, int USER, int CHAT, ITelegramBotClient botClient)
         {
             switch (message.Text)
@@ -103,10 +105,7 @@ namespace TelegaBotMotya
 
             }
         }
-
-
-
-
+        //функция содержащая меню ветвления для мастера
         public static async Task menu2(Message message, int USER, int CHAT, ITelegramBotClient botClient)
         {
             if (users[USER].menu.Count < 1)
@@ -655,7 +654,7 @@ namespace TelegaBotMotya
                     }
             }
         }
-
+        //функция содержащая меню ветвления для контролёра
         public static async Task menu1(Message message, int USER, int CHAT, ITelegramBotClient botClient)
         {
             if (users[USER].menu.Count < 1)
@@ -1233,9 +1232,7 @@ namespace TelegaBotMotya
         }
 
 
-
-
-
+        //функция асинхронного сохранения файла мастеров
         public static async Task savemasters()
         {
             string fileName1 = @"dateSaves\masters.txt";
@@ -1243,6 +1240,7 @@ namespace TelegaBotMotya
             await JsonSerializer.SerializeAsync(createStream1, masters);
             await createStream1.DisposeAsync();
         }
+        //функция асинхронного сохранения файла пользователей
         public static async Task saveusers()
         {
             string fileName1 = @"dateSaves\users.txt";
@@ -1250,6 +1248,7 @@ namespace TelegaBotMotya
             await JsonSerializer.SerializeAsync(createStream1, users);
             await createStream1.DisposeAsync();
         }
+        //функция асинхронного сохранения файла листа заказов
         public static async Task savezakazlist()
         {
             string fileName = @"dateSaves\zakazList.txt";
@@ -1257,6 +1256,7 @@ namespace TelegaBotMotya
             await JsonSerializer.SerializeAsync(createStream, zakazList);
             await createStream.DisposeAsync();
         }
+        //функция асинхронного сохранения файла с глобальными переменными
         public static async Task saveglobals()
         {
             string fileName = @"dateSaves\globals.txt";
@@ -1264,13 +1264,13 @@ namespace TelegaBotMotya
             await JsonSerializer.SerializeAsync(createStream, globals);
             await createStream.DisposeAsync();
         }
-
+        //Фукция отлова ошибок
         public static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             // Некоторые действия
             Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(exception));
         }
-
+        //Парсер сообщения в обект заказа
         public static async Task shablon(Message message, int USER, int CHAT, ITelegramBotClient botClient)
         {
             if (message.Caption != null)
@@ -1444,6 +1444,7 @@ namespace TelegaBotMotya
                 }
             }
         }
+        //Функция поиска заказа по давности от текущей даты
         public static async Task ZakazForDateBefore(int i,int day, Message message, ITelegramBotClient botClient)
         {
             if (zakazList[i].MbTimeStart.Year == DateTime.Now.Year & zakazList[i].MbTimeStart.DayOfYear >= DateTime.Now.DayOfYear - day)
@@ -1461,6 +1462,7 @@ namespace TelegaBotMotya
             }
             return;
         }
+        //Функция отлова нажатий вспомогательных кнопок в меню пользователя
         public static async Task keybord(int fi,Message message, ITelegramBotClient botClient, int USER)
         {
             switch (fi)
@@ -1581,6 +1583,7 @@ namespace TelegaBotMotya
             }
 
         }
+        //Поиск заказа по его id
         public static int IDtoNUM_Z(long id)
         {
             int zm = -1;
@@ -1593,6 +1596,7 @@ namespace TelegaBotMotya
             }
             return zm;
         }
+        //Поиск мастера по его id
         public static int IDtoNUM_M(long id)
         {
             int zm = -1;
@@ -1605,6 +1609,8 @@ namespace TelegaBotMotya
             }
             return zm;
         }
+
+        //Поиск пользователя и назначенного чата для получения по его id
         public static int[] UC(long id,Chat chat)
         {
             int CHAT = -1;
@@ -1653,11 +1659,8 @@ namespace TelegaBotMotya
             int[] UC = new[] { USER, CHAT };
             return UC;
         }
-        public static async Task MASTERN()
-        {
 
-        }
-
+        //Функция отлова нажатий вспомогательных кнопок у сообщений
         public static async Task HandleCallbackQuery(ITelegramBotClient botClient, CallbackQuery callbackQuery)
         {
             Console.WriteLine(callbackQuery.Data);
@@ -1760,6 +1763,7 @@ namespace TelegaBotMotya
             return;
         }
 
+        //Main с подгрузкой файлов в бд
         static void Main(string[] args)
         {
 
